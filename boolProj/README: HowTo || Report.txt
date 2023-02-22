@@ -71,6 +71,7 @@
  ming the same task (e.g. "compTTbyDef").
  
  Please let us recall our advice: read the comments to the code!
+ Type 'python3 boolproj.py' in the command line and get started!
  Enjoy! :D
  
  Authors: Paolo Piasenti & Alberto Ibrisevic
