@@ -1,1 +1,69 @@
+HOWTO
+L'applicativo che abbiamo sviluppato si divide in 3 sottoapplicativi: il SENDER, il RECEIVER, il DATABASE. A
+ognuno di essi è stata dedicata una cartella avente il medesimo nome. Oltre a queste tre cartelle c'è questo
+README e una cartella chiamata LIBRARIES, che contiene le librerie dei cifrari AES ed RSA scritte in lingua-
+gio C dai sottoscritti.
+
+COME LANCIARE L'APPLICATIVO
+L'applicazione può essere lanciata solo da Linux. Prima di fare ogni cosa, è buono assicurarsi che i percorsi
+che compaiono nelle ultime 2 righe del Compile del SENDER e del RECEIVER (quelli relativi alle opzioni "-I ")
+corrispondano ai percorsi che si ottengono lanciando i comandi "locate jni.h" e "locate jni_md.h" sul termin-
+ale. Per lanciare un applicativo, è necessario aprire un prompt dei comandi nella cartella col nome di quello
+che si vuole lanciare, compilare ogni script lanciando ./Compile e infine eseguendo digitando ./Run.
+Se si vuole mandare un'immagine, bisogna ASSOLUTAMENTE fare partire per primo il RECEIVER, che gioca il ruolo
+di server, e che quindi è abbastanza ragionevole assumere che sia sempre acceso e in ascolto. Solo dopo avere
+fatto partire il RECEIVER (che si aprirà all'utente come una semplice console non interattiva che stampa mes-
+saggi di log a video) è possibile fare partire il SENDER (che per come è stato implementato, si potrà connet-
+tere al RECEIVER mediante socket). Il DATABASE ha invece una vita prorpia, indipendente dagli altri due, sal-
+vo per il fatto che si assume interagisca col RECEIVER nel senso che immagazzina l'informazione che quest'ul-
+timo si occupa di ricevere.
+
+SENDER
+Il SENDER è molto intuitivo da usare: con il bottone 'LOAD IMAGE' si carica un'immagine scegliendola da quel-
+le a disposizione sul pc, che verrà proiettata a video nel rettangolone trasparente inizialmente vuoto; fatto
+questo, bisogna inserire i tags relativi all'immagine uploadata nell'apposita stringa di testo, ricordandosi:
+che non si possono utilizzare più di 100 caratteri, che non si può utilizzare il carattere & e che bisogna s-
+eparare ogni tag con uno e un solo spazio (si badi che queste informazioni sono disponibili anche in tempo r-
+eale mentre si usa l'applicazione mediante una console che avvisa di eventuali errori). Dopo aver correttame-
+nte inserito i tags, è possibile inviar la foto insieme a questi ultimi premendo il bottone SUBMIT o premendo
+il tasto INVIO da tastiera. Si badi che per il corretto comportamento degli applicativi è utile ricordarsi di
+non chiudere il SENDER dal terminale bensì dalla classica crocetta rossa in alto a destra della finestra.
+
+RECEIVER
+E un daemon. Attende che un eventuale client si colleghi al socket da esso stesso avviato e rimane in ascolto
+di un eventuale volontà da parte del client di mandargli un messaggio. A quel punto genera le chiavi pubblica
+e privata (RSA) per comunicare segretamente con esso e aspetta di ricevere la chiave AES da parte del SENDER.
+Una volta ricevuta la chiave (crittata), la decritta e la tiene da parte per decrittare il vero messaggio che
+verrà inviato dal SENDER (foto+tags). Una volta ricevuto l'effettivo messaggio, lo decritta con la chiave AES
+precedentemente sharata e salva foto e tags in ubicazioni ad hoc, in modo che esse possano poi essere facilm-
+ente reperite dal DATABASE. Il RECEIVER interagisce passivamente con l'utente, printanto a video tutte le op-
+erazioni che sta compiendo o ha compiuto in tempo reale (per esempio pubblicando la RSA public key generata). 
+Per il corretto comportamento degli applicativi, è utile ricordarsi di non chiudere il RECEIVER prima di aver
+disconnesso tutti il clients.
+
+DATABASE
+Così come il SENDER, è molto banale da usare: inserendo nella stringa di ricerca uno o più tags, il programma
+displayerà nel rettangolone inizialmente trasparente la lista di foto corrispondente alla ricerca. Si badi ad
+inserire nella stringa di ricerca una sequenza di caratteri valida, dove il concetto di valido è spiegato ne-
+ll'applicativo stesso quando si commette un errore sintattico (ad esempio due spazi consecutivi). Nel cercare
+due o più tags si posson performare due operazioni (ma esse non possono essere performate contemporaneamente)
+ossia cercare l'unione dei tags o l'intersezione dei tags. L'unione è performata separando ogni tag con un s-
+olo spazio e il risultato è una lista di immagini tale che ogni immagine corrisponde ad almeno uno dei tag i-
+nseriti. L'intersezione è performata concatenando ogni tag con un '&', e il risultato è una lista di immagini
+tale che ogni immagine corrisponde ad ognuno dei tag inseriti. Come già sottilneato, non si possono combinare
+queste due operazioni nella stessa ricerca (per esempio 'cane gatto&struzzo' è una stringa non valida). Esis-
+te anche un pulsante CLEAR DATABASE, che se premuto apre una finestrella in cui si chiede definitivamente al-
+l'utente se voglia effettivamente cancellare tutti i dati contenuti nel database. Si noti che premendo il ta-
+sto invio da tastiera dopo aver inserito la stringa di tags da cercare si ottiene lo stesso risultato che pr-
+emendo su SEARCH, e che se si vuole vedere una delle immagini trovate con la ricerca nelle sue dimensioni re-
+ali è possibile aprirla con il visualizzatore di immagini predefinito del pc cliccandoci sopra 2 volte con il
+mouse (è proprio a questo che serve la libreria common-lang3.jar nel DATABASE: viene impiegata in un pezzo di
+codice che gestisce l'apertura del file da parte di un lettore d'immagini predefinito e in caso di fallimento
+gestisce bene l'errore).
+
+
+Luca & Paolo
+
+
+
 
