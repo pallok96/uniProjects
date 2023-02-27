@@ -1,0 +1,910 @@
+BinTable := [                                           
+                   [false, false, false, false],
+                   [false, false, false, true ],
+                   [false, false, true , false],
+                   [false, false, true , true ],
+                   [false, true , false, false],
+                   [false, true , false, true ],
+                   [false, true , true , false],
+                   [false, true , true , true ],
+                   [true , false, false, false],
+                   [true , false, false, true ],
+                   [true , false, true , false],
+                   [true , false, true , true ], 
+                   [true , true , false, false],
+                   [true , true , false, true ],
+                   [true , true , true , false],
+                   [true , true , true , true ]
+             ]; 
+
+
+
+
+
+HexTable := ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+
+
+
+
+
+ConstKey := [false, false, false, false, false, false, false, true, false, false, true, false, false, false, true, true, false, true, false, false, false, true, false, true, false, true, true, false, false, true, true, true, true, false, false, false, true, false, false, true, true, false, true, false, true, false, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, false, true, true, false, true, true, true, false, false, true, false, true, true, true, false, true, false, true, false, false, true, true, false, false, false, false, true, true, true, false, true, true, false, false, true, false, true, false, true, false, false, false, false, true, true, false, false, true, false, false, false, false, true, false, false, false, false];
+
+
+
+
+
+S9Table := [        
+                   [false, true , false, true , false, false, true , true , true ],
+                   [false, true , true , true , false, true , true , true , true ],
+                   [false, true , false, true , false, false, false, false, true ],
+                   [true , false, true , true , true , true , false, true , true ],
+                   [true , true , false, false, false, false, true , true , true ],
+                   [true , false, true , false, false, true , true , true , false],
+                   [false, false, false, false, false, true , false, false, true ],
+                   [true , false, true , false, true , false, false, true , false],
+                   [false, false, false, true , false, false, true , true , false],
+                   [false, true , true , true , false, false, false, true , false],
+                   [false, false, false, true , true , false, false, false, false],
+                   [true , false, true , true , false, false, true , true , false],
+                   [true , true , true , false, false, false, true , false, false],
+                   [true , true , false, false, false, false, false, false, true ],
+                   [false, false, true , false, true , true , false, true , false],
+                   [true , true , false, false, false, true , true , false, true ],
+                   [false, true , false, true , true , false, true , true , true ],
+                   [false, true , true , true , true , true , true , false, true ],
+                   [false, true , false, false, true , false, false, true , true ],
+                   [true , false, true , false, false, true , false, true , true ],
+                   [true , true , false, false, true , true , true , true , true ],
+                   [true , false, true , false, true , false, true , false, false],
+                   [false, false, false, true , true , false, false, true , true ],
+                   [true , false, true , true , false, true , false, true , false],
+                   [true , false, false, true , true , false, false, true , false],
+                   [true , true , true , true , true , false, true , false, false],
+                   [true , false, false, false, false, false, true , true , false],
+                   [false, false, true , false, true , false, false, true , false],
+                   [false, true , true , false, true , true , false, false, false],
+                   [false, true , false, false, true , true , true , true , true ],
+                   [true , false, true , true , false, false, true , false, false],
+                   [false, true , false, true , true , false, false, false, true ],
+                   [false, true , false, true , false, true , true , true , true ],
+                   [false, true , true , true , true , false, false, false, true ],
+                   [true , true , true , true , false, true , false, false, true ],
+                   [false, false, false, true , false, false, true , false, true ],
+                   [false, true , true , false, false, true , true , true , false],
+                   [false, false, false, false, true , false, false, false, true ],
+                   [false, false, false, false, false, false, false, false, false],
+                   [true , false, true , false, false, true , true , false, true ],
+                   [false, false, false, true , false, true , true , false, false],
+                   [false, true , true , true , true , true , true , true , false],
+                   [true , false, true , true , true , true , false, true , false],
+                   [false, false, false, true , true , true , false, true , false],
+                   [false, true , false, false, false, true , true , true , true ],
+                   [false, true , true , false, true , true , true , false, false],
+                   [false, false, true , false, true , false, false, false, true ],
+                   [true , true , false, false, true , false, false, false, false],
+                   [false, false, true , false, true , true , true , true , true ],
+                   [false, false, false, false, false, false, false, true , true ],
+                   [true , false, false, true , true , true , false, true , true ],
+                   [false, true , true , true , true , false, true , false, true ],
+                   [false, false, false, true , true , false, true , true , false],
+                   [false, true , true , true , false, true , false, true , true ],
+                   [false, true , true , false, true , true , false, true , false],
+                   [true , true , false, false, true , false, true , false, true ],
+                   [true , true , true , false, true , true , false, false, false],
+                   [true , false, false, false, false, true , false, false, false],
+                   [false, true , false, true , false, true , true , false, false],
+                   [true , true , true , true , false, true , true , true , false],
+                   [true , false, true , true , true , false, false, true , true ],
+                   [true , false, false, true , false, false, false, true , false],
+                   [true , true , false, false, false, true , true , true , true ],
+                   [false, false, true , false, false, true , true , false, false],
+                   [false, true , false, true , false, false, true , false, true ],
+                   [false, true , true , false, false, false, true , false, true ],
+                   [true , true , false, false, false, true , false, true , true ],
+                   [false, false, true , true , true , true , false, false, true ],
+                   [true , false, false, false, false, false, false, false, true ],
+                   [true , true , true , true , false, false, false, false, false],
+                   [true , true , false, true , false, false, true , true , true ],
+                   [false, true , true , false, true , false, true , false, false],
+                   [false, true , true , true , true , false, false, false, false],
+                   [false, false, false, false, true , true , true , false, false],
+                   [true , true , true , false, false, true , true , true , false],
+                   [false, true , false, true , true , false, false, false, false],
+                   [true , true , false, false, true , false, true , true , false],
+                   [true , true , true , true , true , true , false, true , true ],
+                   [true , false, false, true , false, false, false, false, false],
+                   [false, true , true , false, true , true , true , true , true ],
+                   [true , true , true , true , true , false, true , false, true ],
+                   [true , true , false, false, true , false, true , true , true ],
+                   [false, true , true , true , true , true , false, false, true ],
+                   [true , false, false, false, false, true , false, false, true ],
+                   [false, false, true , false, true , true , false, false, true ],
+                   [false, true , false, true , true , true , false, true , false],
+                   [false, true , true , false, true , true , true , false, true ],
+                   [true , true , false, true , false, true , true , false, false],
+                   [false, true , false, true , false, false, true , false, false],
+                   [false, false, true , false, false, true , false, true , false],
+                   [true , true , false, true , true , true , false, false, false],
+                   [false, true , true , false, false, false, true , false, false],
+                   [true , true , true , false, false, true , false, true , false],
+                   [true , true , false, true , false, false, true , false, true ],
+                   [true , false, true , false, true , true , true , true , false],
+                   [false, true , false, true , false, false, false, true , true ],
+                   [false, true , true , true , false, true , false, false, false],
+                   [false, true , false, false, true , true , true , true , false],
+                   [false, true , false, false, false, false, true , true , false],
+                   [true , false, true , true , false, false, false, true , false],
+                   [false, false, false, false, false, true , true , false, true ],
+                   [false, true , true , true , true , true , false, true , false],
+                   [true , true , true , true , false, true , false, true , true ],
+                   [false, true , false, false, false, true , true , true , false],
+                   [false, true , false, true , true , true , true , true , true ],
+                   [false, false, true , false, false, false, true , false, true ],
+                   [false, true , true , false, false, false, false, false, true ],
+                   [true , true , false, true , false, true , false, false, true ],
+                   [false, true , false, false, true , true , false, false, false],
+                   [false, true , true , true , false, false, false, true , true ],
+                   [true , false, true , true , false, true , true , true , false],
+                   [false, true , false, false, false, false, true , true , true ],
+                   [true , false, true , false, true , true , false, false, false],
+                   [true , false, false, true , false, true , true , false, false],
+                   [true , false, false, false, true , false, true , false, false],
+                   [false, true , true , true , true , false, false, true , false],
+                   [true , true , false, true , true , false, true , false, true ],
+                   [true , false, true , false, false, false, false, false, false],
+                   [false, false, true , true , true , false, false, false, true ],
+                   [true , false, false, false, true , false, true , true , false],
+                   [false, false, false, false, false, true , false, true , true ],
+                   [false, true , true , true , true , false, false, true , true ],
+                   [false, false, true , false, true , false, true , true , true ],
+                   [true , false, false, true , true , true , true , false, true ],
+                   [false, false, false, true , false, false, true , false, false],
+                   [false, false, true , false, true , true , true , false, true ],
+                   [true , true , true , true , true , false, false, false, false],
+                   [false, false, false, false, true , true , false, true , true ],
+                   [true , true , true , true , false, false, true , true , true ],
+                   [true , true , false, true , true , true , true , true , false],
+                   [true , true , true , true , false, false, false, true , false],
+                   [false, false, false, true , false, true , false, false, true ],
+                   [false, false, true , false, false, false, true , false, false],
+                   [false, true , false, false, true , true , true , false, false],
+                   [true , true , true , false, false, true , false, false, true ],
+                   [false, true , false, false, false, false, false, true , true ],
+                   [true , false, true , false, false, false, true , true , false],
+                   [true , true , false, false, true , false, false, true , true ],
+                   [true , false, true , false, true , false, false, true , true ],
+                   [false, false, false, false, true , false, true , false, false],
+                   [false, false, false, true , false, false, true , true , true ],
+                   [false, false, true , true , true , false, false, true , true ],
+                   [true , true , false, true , true , true , false, true , false],
+                   [false, false, true , true , true , true , true , false, false],
+                   [true , true , true , false, true , true , false, true , true ],
+                   [true , true , false, false, false, false, false, false, false],
+                   [true , true , true , true , true , true , true , false, false],
+                   [false, false, false, true , true , false, true , false, true ],
+                   [false, false, true , true , true , false, false, false, false],
+                   [false, true , false, true , false, true , false, true , false],
+                   [true , true , true , false, true , true , true , true , true ],
+                   [false, true , false, false, true , false, true , true , true ],
+                   [false, false, true , true , true , true , true , true , false],
+                   [false, true , false, true , false, true , false, false, true ],
+                   [false, false, true , false, false, true , false, false, true ],
+                   [true , false, false, false, false, true , true , false, false],
+                   [true , false, false, false, true , false, true , true , true ],
+                   [true , false, true , false, false, false, false, false, true ],
+                   [false, true , false, true , false, true , false, false, false],
+                   [true , false, true , true , false, true , true , false, false],
+                   [true , false, true , true , false, true , false, true , true ],
+                   [true , false, false, true , false, false, true , false, false],
+                   [false, false, false, true , false, true , true , true , false],
+                   [true , true , true , true , true , false, false, true , true ],
+                   [true , true , false, false, false, true , false, false, true ],
+                   [true , false, true , false, false, false, true , true , true ],
+                   [true , false, true , false, false, false, true , false, false],
+                   [false, false, false, false, true , true , false, false, false],
+                   [true , true , true , false, false, true , false, false, false],
+                   [true , false, false, false, false, true , false, true , true ],
+                   [false, true , false, false, true , true , true , false, true ],
+                   [true , true , true , false, false, true , true , false, false],
+                   [true , true , true , true , false, true , false, false, false],
+                   [true , true , false, true , false, true , false, true , false],
+                   [true , false, false, true , true , false, true , false, true ],
+                   [false, true , true , true , false, false, true , false, true ],
+                   [true , true , false, true , true , false, true , true , true ],
+                   [true , true , true , true , true , true , false, true , false],
+                   [false, true , true , false, true , false, false, false, false],
+                   [true , false, false, false, false, true , true , true , true ],
+                   [true , false, true , false, true , true , true , false, true ],
+                   [true , true , false, false, true , false, false, false, true ],
+                   [true , true , false, true , true , false, false, true , false],
+                   [false, true , true , true , false, true , true , false, false],
+                   [false, false, false, false, true , false, false, false, false],
+                   [false, true , true , false, true , false, false, false, true ],
+                   [true , false, true , true , false, false, true , true , true ],
+                   [false, false, false, true , true , false, true , false, false],
+                   [false, false, false, true , true , true , false, false, false],
+                   [false, false, true , true , true , true , false, false, false],
+                   [false, true , true , false, false, false, true , true , true ],
+                   [true , false, false, false, true , false, true , false, true ],
+                   [true , true , true , false, true , false, false, false, true ],
+                   [true , true , false, true , false, false, false, false, false],
+                   [false, true , true , true , true , true , true , false, false],
+                   [true , false, false, false, true , true , true , true , true ],
+                   [false, true , true , true , true , false, true , true , false],
+                   [false, false, false, false, false, false, true , true , false],
+                   [false, false, true , false, true , false, false, true , true ],
+                   [true , false, false, true , true , false, false, false, true ],
+                   [true , true , false, true , false, false, true , false, false],
+                   [true , false, true , false, true , true , false, false, true ],
+                   [false, true , false, false, true , true , false, false, true ],
+                   [true , true , true , true , true , false, true , true , false],
+                   [false, false, true , false, false, false, false, false, true ],
+                   [false, false, false, true , true , true , true , false, true ],
+                   [false, true , true , true , true , false, true , false, false],
+                   [true , false, false, false, true , true , false, true , false],
+                   [false, true , false, true , false, true , true , false, true ],
+                   [false, true , true , false, true , true , true , true , false],
+                   [true , true , false, true , false, false, false, true , false],
+                   [false, false, true , false, false, false, false, true , true ],
+                   [true , true , false, false, false, false, false, true , false],
+                   [true , false, true , true , true , false, false, false, false],
+                   [true , false, false, false, false, false, true , false, true ],
+                   [false, false, true , true , false, false, true , false, true ],
+                   [true , true , true , false, true , true , true , false, false],
+                   [true , false, false, true , false, false, false, true , true ],
+                   [false, true , true , false, false, false, false, true , true ],
+                   [true , true , false, true , false, true , true , true , false],
+                   [false, false, false, true , true , false, false, false, true ],
+                   [false, false, true , false, false, true , true , true , true ],
+                   [false, true , false, true , false, false, true , true , false],
+                   [true , false, true , false, false, true , false, true , false],
+                   [true , false, false, false, true , true , false, false, false],
+                   [true , false, true , true , true , true , true , true , true ],
+                   [true , false, true , true , true , false, true , false, true ],
+                   [false, true , false, false, false, false, false, false, false],
+                   [true , false, true , true , true , true , true , true , false],
+                   [true , true , false, false, true , true , false, false, false],
+                   [false, true , false, false, true , true , false, true , true ],
+                   [true , true , true , true , false, true , true , true , true ],
+                   [true , false, true , true , false, true , true , true , true ],
+                   [true , true , false, false, false, false, true , false, false],
+                   [true , false, false, false, true , false, false, true , false],
+                   [false, false, true , true , false, true , false, true , true ],
+                   [true , true , true , false, false, true , false, true , true ],
+                   [true , true , false, true , false, false, false, false, true ],
+                   [false, false, false, true , true , true , true , true , false],
+                   [true , true , true , false, false, false, true , true , false],
+                   [false, true , false, false, false, false, true , false, false],
+                   [false, true , true , true , false, false, false, false, true ],
+                   [false, true , true , false, false, true , false, true , true ],
+                   [true , false, false, true , true , true , true , false, false],
+                   [false, true , true , true , false, true , false, true , false],
+                   [false, false, false, false, false, true , true , true , false],
+                   [true , false, false, true , false, true , true , false, true ],
+                   [false, false, true , false, true , true , false, true , true ],
+                   [true , true , true , true , true , false, true , true , true ],
+                   [true , false, false, false, true , true , true , true , false],
+                   [true , true , false, true , false, true , false, false, false],
+                   [false, true , true , false, true , false, false, true , true ],
+                   [true , false, true , false, true , true , false, true , true ],
+                   [true , false, false, true , true , false, false, true , true ],
+                   [false, true , false, false, false, true , true , false, false],
+                   [true , false, true , true , true , false, true , true , false],
+                   [false, false, false, true , false, false, false, true , true ],
+                   [false, false, true , true , false, false, true , true , true ],
+                   [false, false, true , true , true , true , true , false, true ],
+                   [true , true , false, true , false, true , false, true , true ],
+                   [false, false, false, false, true , false, false, true , true ],
+                   [false, true , true , false, true , false, true , true , false],
+                   [true , true , true , false, false, false, true , false, true ],
+                   [false, true , false, false, true , false, false, true , false],
+                   [true , true , true , true , true , false, false, true , false],
+                   [true , false, false, true , true , true , false, true , false],
+                   [true , true , false, true , true , true , true , false, false],
+                   [false, true , true , true , false, false, true , true , false],
+                   [true , false, false, false, false, false, false, false, false],
+                   [true , false, true , false, false, true , false, false, true ],
+                   [false, true , true , false, false, false, true , true , false],
+                   [true , false, false, false, true , true , true , false, true ],
+                   [false, false, false, true , true , false, false, true , false],
+                   [false, false, true , true , true , false, true , false, false],
+                   [false, false, true , false, false, true , true , true , false],
+                   [true , true , false, false, true , true , false, true , false],
+                   [false, false, false, false, false, true , false, true , false],
+                   [false, true , true , false, false, true , true , false, true ],
+                   [true , true , true , true , true , true , true , true , false],
+                   [false, true , false, true , false, true , false, true , true ],
+                   [false, true , true , true , false, false, true , true , true ],
+                   [false, false, false, true , false, true , true , false, true ],
+                   [false, true , false, false, false, true , false, true , true ],
+                   [true , true , true , false, true , false, false, true , true ],
+                   [false, false, false, false, true , true , true , false, true ],
+                   [false, false, true , false, true , false, true , true , false],
+                   [true , true , true , true , true , true , false, false, true ],
+                   [false, false, false, true , false, false, false, false, false],
+                   [false, false, true , false, false, true , false, false, false],
+                   [false, false, false, false, true , true , false, true , false],
+                   [true , false, true , false, true , false, true , true , false],
+                   [false, true , false, false, true , false, true , true , false],
+                   [true , false, false, true , true , true , false, false, true ],
+                   [true , true , true , true , false, true , false, true , false],
+                   [true , true , false, true , false, true , true , true , true ],
+                   [false, true , true , true , false, true , true , true , false],
+                   [true , true , false, false, true , true , false, true , true ],
+                   [true , false, true , false, false, false, true , false, true ],
+                   [false, true , false, false, true , false, true , false, true ],
+                   [true , true , true , false, true , true , false, false, true ],
+                   [false, false, false, true , false, true , false, false, false],
+                   [false, false, true , true , true , false, true , true , true ],
+                   [false, true , false, true , false, true , true , true , false],
+                   [true , false, true , true , false, false, false, true , true ],
+                   [false, true , false, true , true , true , false, false, true ],
+                   [false, true , true , true , false, true , false, false, true ],
+                   [true , true , false, false, false, false, true , false, true ],
+                   [false, false, true , false, false, false, true , true , true ],
+                   [true , true , true , false, false, false, false, false, false],
+                   [true , false, false, false, true , false, false, false, true ],
+                   [true , false, true , true , true , false, true , false, false],
+                   [false, false, false, true , true , false, true , true , true ],
+                   [false, false, true , true , false, true , true , true , false],
+                   [false, true , false, true , true , false, false, true , false],
+                   [true , false, true , false, false, false, false, true , false],
+                   [false, false, false, false, false, true , true , false, false],
+                   [true , true , true , false, true , false, true , false, true ],
+                   [true , true , false, false, false, true , false, false, false],
+                   [true , false, true , true , true , false, false, false, true ],
+                   [false, true , false, true , true , true , true , true , false],
+                   [false, false, false, false, false, false, false, false, true ],
+                   [false, false, true , true , false, true , true , false, true ],
+                   [true , false, true , true , true , false, true , true , true ],
+                   [false, true , false, false, false, true , false, false, true ],
+                   [false, true , false, true , true , false, true , false, true ],
+                   [false, false, true , false, true , true , false, false, false],
+                   [false, false, true , false, false, true , false, true , true ],
+                   [true , false, false, true , true , false, true , false, false],
+                   [true , false, false, false, false, false, true , false, false],
+                   [true , true , true , true , false, false, true , false, false],
+                   [false, false, true , true , false, false, false, true , false],
+                   [true , false, false, false, true , false, false, false, false],
+                   [true , false, true , true , true , false, false, true , false],
+                   [true , false, false, false, true , false, false, true , true ],
+                   [true , true , false, false, true , true , true , false, false],
+                   [false, false, true , true , false, true , true , true , true ],
+                   [true , false, true , false, true , false, false, false, false],
+                   [true , false, false, true , true , true , true , true , false],
+                   [false, false, false, false, false, false, true , false, false],
+                   [true , true , true , true , true , true , false, false, false],
+                   [true , true , true , true , false, true , true , false, false],
+                   [true , false, false, false, false, false, false, true , true ],
+                   [true , false, false, true , true , false, false, false, false],
+                   [false, false, true , false, false, true , true , false, true ],
+                   [true , false, true , false, true , false, false, false, true ],
+                   [true , true , false, true , true , false, false, true , true ],
+                   [false, false, false, false, true , false, true , false, true ],
+                   [true , false, true , true , false, false, true , false, true ],
+                   [true , false, false, true , false, true , true , true , true ],
+                   [true , false, true , false, false, true , true , false, false],
+                   [true , true , true , true , false, false, false, true , true ],
+                   [false, false, false, false, true , false, false, true , false],
+                   [false, false, false, true , false, true , true , true , true ],
+                   [false, false, true , false, true , false, true , false, true ],
+                   [false, false, false, false, true , true , false, false, true ],
+                   [true , true , true , true , true , false, false, false, true ],
+                   [true , true , true , false, true , true , false, true , false],
+                   [true , false, false, true , false, false, false, false, true ],
+                   [false, false, true , true , false, false, true , false, false],
+                   [true , false, false, false, false, true , true , false, true ],
+                   [true , false, false, true , false, true , false, false, false],
+                   [true , true , true , false, true , true , true , true , false],
+                   [true , false, false, false, false, true , true , true , false],
+                   [false, false, true , true , false, true , false, true , false],
+                   [false, false, false, false, true , true , true , true , true ],
+                   [false, false, true , true , false, true , false, false, false],
+                   [true , true , false, true , true , false, false, false, true ],
+                   [false, false, true , false, true , false, true , false, false],
+                   [true , true , false, false, true , true , true , true , false],
+                   [true , true , true , true , false, false, true , true , false],
+                   [true , true , false, false, false, true , false, true , false],
+                   [false, false, true , true , false, false, false, false, false],
+                   [false, false, true , true , false, false, false, true , true ],
+                   [false, true , false, false, true , true , false, true , false],
+                   [true , true , true , true , true , true , true , true , true ],
+                   [false, true , false, false, true , false, true , false, false],
+                   [true , true , false, false, true , true , true , false, true ],
+                   [true , false, true , true , false, true , false, false, true ],
+                   [true , true , false, false, true , true , false, false, true ],
+                   [false, true , true , true , true , true , true , true , true ],
+                   [false, true , false, true , false, false, false, true , false],
+                   [false, true , true , false, true , false, true , true , true ],
+                   [true , false, false, true , false, true , true , true , false],
+                   [false, true , true , false, false, true , false, false, true ],
+                   [true , false, false, false, false, true , false, true , false],
+                   [true , false, true , false, true , true , true , true , true ],
+                   [true , false, true , false, true , false, true , true , true ],
+                   [false, true , false, false, true , false, false, false, false],
+                   [true , true , false, true , true , true , false, false, true ],
+                   [true , false, true , true , false, true , true , false, true ],
+                   [false, false, true , true , false, true , true , false, false],
+                   [true , false, false, true , false, true , false, true , false],
+                   [false, true , true , true , true , true , false, true , true ],
+                   [false, false, false, true , false, false, false, true , false],
+                   [false, true , false, true , true , false, true , true , false],
+                   [true , true , true , true , true , true , true , false, true ],
+                   [false, true , false, false, false, true , false, true , false],
+                   [false, true , true , false, true , false, false, true , false],
+                   [true , false, true , false, false, true , true , true , true ],
+                   [false, true , false, false, false, false, true , false, true ],
+                   [true , false, false, true , true , false, true , true , true ],
+                   [true , false, true , true , false, false, false, false, false],
+                   [true , false, true , false, false, true , false, false, false],
+                   [false, true , false, false, false, true , true , false, true ],
+                   [true , true , false, false, false, true , true , false, false],
+                   [true , false, true , false, true , true , false, true , false],
+                   [false, false, true , true , true , true , false, true , true ],
+                   [true , false, false, true , true , true , true , true , true ],
+                   [true , true , true , false, false, false, false, true , false],
+                   [true , false, false, false, true , true , false, false, true ],
+                   [true , true , false, true , false, true , true , false, true ],
+                   [false, true , true , true , false, false, true , false, false],
+                   [true , true , false, true , true , true , false, true , true ],
+                   [true , true , true , true , false, false, false, false, true ],
+                   [false, false, true , false, true , true , true , false, false],
+                   [true , true , false, false, true , false, true , false, false],
+                   [true , true , true , true , false, false, true , false, true ],
+                   [true , true , false, true , false, false, true , true , false],
+                   [false, true , true , true , true , true , false, false, false],
+                   [true , false, false, true , false, true , false, false, true ],
+                   [false, false, false, false, true , false, true , true , true ],
+                   [false, true , true , false, true , false, true , false, true ],
+                   [false, true , false, false, false, false, false, true , false],
+                   [true , true , true , false, true , false, false, true , false],
+                   [false, false, false, false, true , false, true , true , false],
+                   [false, true , true , false, true , true , false, false, true ],
+                   [true , false, false, false, true , true , false, true , true ],
+                   [false, false, true , false, false, false, true , true , false],
+                   [true , false, false, true , false, false, true , true , false],
+                   [true , false, true , true , false, true , false, false, false],
+                   [true , true , false, true , false, false, false, true , true ],
+                   [false, false, true , true , true , true , true , true , true ],
+                   [true , false, false, true , true , true , false, false, false],
+                   [true , false, true , true , true , true , false, false, true ],
+                   [false, false, false, false, false, false, true , true , true ],
+                   [true , true , true , false, true , false, true , false, false],
+                   [false, true , true , false, false, false, false, true , false],
+                   [false, false, false, false, false, false, false, true , false],
+                   [false, false, true , true , true , false, true , false, true ],
+                   [true , false, false, true , false, false, true , true , true ],
+                   [true , true , true , false, false, true , true , true , true ],
+                   [true , false, false, false, false, false, false, true , false],
+                   [false, true , true , true , false, false, false, false, false],
+                   [true , true , false, true , true , true , true , true , true ],
+                   [false, true , true , true , true , false, true , true , true ],
+                   [false, true , false, true , true , true , false, true , true ],
+                   [false, false, true , false, true , false, false, false, false],
+                   [true , true , false, false, false, true , true , true , false],
+                   [true , false, false, false, true , true , true , false, false],
+                   [true , false, true , true , false, false, false, false, true ],
+                   [false, false, true , true , false, true , false, false, true ],
+                   [true , true , false, false, false, false, true , true , false],
+                   [true , false, false, true , false, true , false, true , true ],
+                   [true , true , true , false, true , false, true , true , true ],
+                   [true , true , true , false, true , false, true , true , false],
+                   [false, true , false, true , true , true , false, false, false],
+                   [false, false, false, true , true , true , false, false, true ],
+                   [false, true , true , false, false, true , false, false, false],
+                   [true , false, true , false, true , true , true , false, false],
+                   [false, false, false, true , true , true , true , true , true ],
+                   [false, true , true , false, false, true , true , false, false],
+                   [false, true , false, true , true , true , true , false, false],
+                   [false, false, false, true , false, false, false, false, true ],
+                   [true , true , true , false, false, false, false, true , true ],
+                   [false, false, true , true , false, false, false, false, true ],
+                   [false, false, false, false, true , true , true , true , false],
+                   [true , false, false, true , true , false, true , true , false],
+                   [false, true , true , false, true , true , false, true , true ],
+                   [false, false, true , false, true , true , true , true , false],
+                   [false, true , false, true , false, false, false, false, false],
+                   [false, true , false, false, false, false, false, false, true ],
+                   [true , true , true , true , false, true , true , false, true ],
+                   [false, false, true , false, false, false, false, false, false],
+                   [false, true , false, true , true , false, false, true , true ],
+                   [true , false, false, false, false, false, true , true , true ],
+                   [false, false, true , true , false, false, true , true , false],
+                   [false, true , false, true , true , true , true , false, true ],
+                   [false, true , true , false, false, true , true , true , true ],
+                   [false, false, true , true , true , false, false, true , false],
+                   [true , true , false, false, true , false, false, true , false],
+                   [true , true , false, true , true , false, true , true , false],
+                   [true , true , true , false, true , true , true , false, true ],
+                   [true , true , false, false, false, false, false, true , true ],
+                   [false, false, true , true , true , true , false, true , false],
+                   [false, true , true , false, false, false, false, false, false],
+                   [false, false, false, true , false, true , false, true , false],
+                   [true , false, true , true , true , true , true , false, true ],
+                   [false, false, false, false, false, false, true , false, true ],
+                   [false, true , false, false, true , false, false, false, true ],
+                   [false, false, true , true , true , false, true , true , false],
+                   [false, true , false, true , true , false, true , false, false],
+                   [true , true , true , false, false, false, false, false, true ],
+                   [true , false, false, true , false, false, true , false, true ],
+                   [true , false, true , false, false, false, false, true , true ],
+                   [false, true , false, false, false, true , false, false, false],
+                   [true , false, true , true , true , true , true , false, false],
+                   [false, false, false, true , false, true , false, true , true ],
+                   [false, false, true , false, false, false, false, true , false],
+                   [false, false, false, true , true , true , true , false, false],
+                   [true , true , true , false, false, false, true , true , true ],
+                   [true , false, true , false, true , false, true , false, true ],
+                   [true , true , false, true , true , true , true , false, true ],
+                   [false, true , true , false, false, true , false, true , false],
+                   [true , true , false, true , true , false, false, false, false],
+                   [false, false, false, false, false, true , false, false, false],
+                   [false, true , true , true , false, true , true , false, true ],
+                   [false, false, false, false, false, true , true , true , true ],
+                   [true , false, true , true , true , true , false, false, false],
+                   [true , true , false, true , true , false, true , false, false],
+                   [true , true , true , false, true , false, false, false, false],
+                   [false, false, false, true , true , true , false, true , true ],
+                   [true , true , true , false, false, true , true , false, true ]
+            ];
+
+
+
+
+
+S7Table := [
+                   [false, true , true , false, true , true , false],
+                   [false, true , true , false, false, true , false],
+                   [false, true , true , true , true , true , false],
+                   [false, true , true , true , false, false, false],
+                   [false, false, true , false, true , true , false],
+                   [false, true , false, false, false, true , false],
+                   [true , false, true , true , true , true , false],
+                   [true , true , false, false, false, false, false],
+                   [false, true , false, false, true , true , false],
+                   [false, false, false, false, true , true , false],
+                   [false, true , true , true , true , true , true ],
+                   [true , false, true , true , true , false, true ],
+                   [false, false, false, false, false, true , false],
+                   [false, false, true , false, false, true , false],
+                   [true , true , true , true , false, true , true ],
+                   [false, true , false, false, false, false, true ],
+                   [false, true , true , false, true , true , true ],
+                   [true , true , true , false, false, false, true ],
+                   [false, true , false, false, true , true , true ],
+                   [true , true , true , false, false, true , false],
+                   [false, false, true , false, true , false, true ],
+                   [true , false, false, false, false, true , true ],
+                   [true , false, false, false, false, false, true ],
+                   [false, false, false, true , true , false, false],
+                   [false, true , false, true , true , true , true ],
+                   [true , false, false, true , false, false, true ],
+                   [false, true , false, true , true , true , false],
+                   [false, false, true , true , false, true , true ],
+                   [false, false, true , true , false, false, true ],
+                   [true , true , false, true , true , true , true ],
+                   [true , true , true , true , true , false, false],
+                   [true , false, true , false, false, false, true ],
+                   [false, true , true , false, true , false, true ],
+                   [false, false, false, true , false, false, true ],
+                   [true , true , true , true , false, false, true ],
+                   [true , false, false, true , true , true , true ],
+                   [false, true , true , false, true , false, false],
+                   [false, true , true , true , true , false, false],
+                   [false, true , true , true , false, true , false],
+                   [false, true , true , false, false, false, false],
+                   [true , true , false, false, true , false, true ],
+                   [true , true , true , true , true , true , true ],
+                   [false, true , false, true , false, false, false],
+                   [true , true , true , true , false, false, false],
+                   [true , true , false, true , false, false, false],
+                   [true , false, false, false, true , true , false],
+                   [true , false, false, false, true , true , true ],
+                   [false, true , false, true , false, true , true ],
+                   [false, false, true , false, true , false, false],
+                   [true , true , true , true , false, true , false],
+                   [true , false, false, true , false, false, false],
+                   [false, true , true , true , true , false, true ],
+                   [false, false, true , false, true , true , true ],
+                   [true , true , false, true , true , false, true ],
+                   [false, false, false, true , true , false, true ],
+                   [true , true , false, false, true , false, false],
+                   [true , false, false, true , true , false, true ],
+                   [false, false, false, false, false, false, true ],
+                   [false, false, true , false, false, false, false],
+                   [false, false, false, false, true , true , true ],
+                   [true , false, true , false, false, true , false],
+                   [false, false, false, true , false, true , false],
+                   [true , true , false, true , false, false, true ],
+                   [true , true , false, false, false, true , false],
+                   [true , true , true , false, true , false, true ],
+                   [true , true , true , false, true , false, false],
+                   [true , false, false, true , true , false, false],
+                   [false, false, false, true , false, true , true ],
+                   [true , false, true , true , false, false, true ],
+                   [true , true , false, true , false, true , false],
+                   [false, false, false, false, false, false, false],
+                   [true , true , true , true , true , false, true ],
+                   [true , true , true , false, true , true , false],
+                   [true , true , false, false, false, true , true ],
+                   [true , false, true , false, true , true , false],
+                   [true , false, false, false, true , false, true ],
+                   [false, false, true , true , true , true , false],
+                   [false, true , true , true , false, false, true ],
+                   [true , true , true , true , true , true , false],
+                   [true , false, true , false, true , true , true ],
+                   [true , true , true , false, false, false, false],
+                   [false, true , true , false, false, true , true ],
+                   [false, false, true , false, false, false, true ],
+                   [false, false, false, false, true , false, true ],
+                   [true , false, true , true , true , true , true ],
+                   [false, false, false, true , true , true , false],
+                   [true , false, true , true , false, true , false],
+                   [true , false, true , false, true , false, false],
+                   [true , false, true , true , false, true , true ],
+                   [false, false, false, true , false, false, false],
+                   [false, true , false, false, false, true , true ],
+                   [true , true , false, false, true , true , true ],
+                   [false, true , false, false, false, false, false],
+                   [true , true , false, false, false, false, true ],
+                   [false, false, true , true , true , false, false],
+                   [true , false, false, false, false, true , false],
+                   [true , true , false, false, true , true , false],
+                   [false, false, true , true , true , true , true ],
+                   [false, false, true , true , false, true , false],
+                   [false, true , false, true , true , false, true ],
+                   [true , false, false, true , false, true , true ],
+                   [false, false, false, false, true , false, false],
+                   [true , false, true , false, true , false, true ],
+                   [true , false, true , true , true , false, false],
+                   [false, true , false, false, true , false, true ],
+                   [true , false, false, true , false, true , false],
+                   [true , false, true , false, false, false, false],
+                   [false, true , true , false, false, false, true ],
+                   [true , false, false, false, true , false, false],
+                   [false, false, true , true , true , false, true ],
+                   [true , true , true , false, false, true , true ],
+                   [false, true , false, true , true , false, false],
+                   [true , false, false, false, false, false, false],
+                   [true , true , false, true , false, true , true ],
+                   [true , true , false, true , true , false, false],
+                   [false, false, true , true , false, false, false],
+                   [true , true , false, true , true , true , false],
+                   [true , false, true , false, false, true , true ],
+                   [false, true , false, false, true , false, false],
+                   [true , false, false, true , true , true , false],
+                   [false, true , false, true , false, true , false],
+                   [false, false, true , false, false, true , true ],
+                   [false, false, false, true , true , true , true ],
+                   [false, true , false, true , false, false, true ],
+                   [true , false, true , true , false, false, false],
+                   [true , true , true , false, true , true , true ],
+                   [false, true , true , true , false, true , true ],
+                   [false, false, false, false, false, true , true ]
+            ];
+
+
+
+
+
+HexToBin := function(S)
+	return &cat [BinTable[Position(HexTable, S[i])] : i in [1 .. #S]];
+end function;
+
+
+
+
+
+BinToHex := function(S)
+	return &cat [HexTable[Position(BinTable, S[i*4+1 .. i*4+4])] : i in [0 .. 15]];
+end function;
+
+
+
+
+
+BinToInt_7 := function(N)                                 
+	S := [0, 0, 0, 0, 0, 0, 0];
+	
+	for i in [1 .. 7] do
+		if N[i] eq true then S[8-i] := 1;
+		end if;
+	end for;
+	
+	return Seqint(S, 2);
+end function;
+
+
+
+
+
+BinToInt_9 := function(N)                                 
+	S := [0, 0, 0, 0, 0, 0, 0, 0, 0];
+	
+	for i in [1 .. 9] do
+		if N[i] eq true then S[10-i] := 1;
+		end if;
+	end for;
+	
+	return Seqint(S, 2);
+end function;
+
+
+
+
+
+KeySchedule := function(Key)        
+	Key := HexToBin(Key);
+
+        K   := Partition(Key, 16);
+        Kp  := Partition(Xor(Key, ConstKey), 16); 
+
+	KK := [];   
+
+        for i in [1 .. 8] do 		
+			KKi := [];
+			
+			KKi[1] := Rotate(K[i], -1);
+			KKi[2] := Kp[(i+1) mod 8 +1];
+
+			KKi[3] := Rotate(K[ i    mod 8 +1], -5 );
+			KKi[4] := Rotate(K[(i+4) mod 8 +1], -8 );
+			KKi[5] := Rotate(K[(i+5) mod 8 +1], -13);
+		
+			KKi[6] := Kp[(3+i) mod 8 +1];
+			KKi[7] := Kp[(2+i) mod 8 +1];
+			KKi[8] := Kp[(6+i) mod 8 +1];
+			
+			KK[i] := KKi;
+	end for;
+
+	return KK;
+end function;
+
+
+
+
+
+ZE := function(A)
+	return [false, false] cat A;
+end function;
+
+
+
+
+
+TR := function(A)
+	return A[3 .. #A];
+end function;
+
+
+
+
+
+S9 := function(N)
+	return S9Table[BinToInt_9(N)+1];
+end function;
+
+
+
+
+
+S7 := function(N)
+	return S7Table[BinToInt_7(N)+1];
+end function;
+
+
+
+
+
+FL := function(I, KKi)
+	L  := I[ 1 .. 16];
+        R  := I[17 .. 32];
+
+        R := Xor(R, Rotate(And(L, KKi[1]), -1));
+        L := Xor(L, Rotate(Or (R, KKi[2]), -1));
+              
+        return L cat R;
+end function;
+
+
+
+
+
+FI := function(I, KIi)
+	A := KIi[1 ..  7];
+	B := KIi[8 .. 16];
+	
+	L0 := I[ 1 ..  9];
+	R0 := I[10 .. 16];
+
+	L1 := R0;
+	R1 := Xor(S9(L0), ZE(R0));
+
+	L2 := Xor(R1, B);
+	R2 := Xor(Xor(S7(L1), TR(R1)), A);
+
+	L3 := R2;
+	R3 := Xor(S9(L2), ZE(R2));
+
+	L4 := Xor(S7(L3), TR(R3));
+	R4 := R3;
+
+        return L4 cat R4;
+end function;
+
+
+
+
+
+FO := function(I, KKi)
+        L  := I[ 1 .. 16];
+        R1 := I[17 .. 32];
+	
+	for i in [3 .. 5] do
+		R2 := Xor(FI(Xor(L, KKi[i]), KKi[i+3]), R1);
+		
+		L  := R1;
+		R1 := R2;
+	end for;
+              
+	return L cat R1;
+end function;
+
+
+
+
+
+fi := function(I, KKi, i)
+	if IsEven(i) then
+        	return FL(FO(I, KKi), KKi);
+        else
+                return FO(FL(I, KKi), KKi);
+        end if;
+end function;
+
+
+
+
+
+Kasumi := function(P, K)
+	KK := KeySchedule(K);
+	P  := HexToBin(P);
+      
+	L0 := P[ 1 .. 32];     
+	R0  := P[33 .. 64];
+	L1 := Xor(R0, fi(L0, KK[1], 1));
+            
+	for i in [2 .. 8] do
+                f_i := fi(L1, KK[i], i);           
+                L2  := Xor(L0, f_i);
+
+		L0 := L1;
+		L1 := L2;
+        end for;
+
+	return BinToHex(L1 cat L0);
+end function;
+
+
+
+
+
+KasumiDecryption := function(C, K)
+        KK := KeySchedule(K);
+	C := HexToBin(C);
+
+	L8 := C[ 1 .. 32];     
+	R8 := C[33 .. 64];
+	R7 := Xor(L8, fi(R8, KK[8], 8));
+        
+	for i in [1 .. 7] do
+                f_i := fi(R7, KK[8-i], 8-i);
+		R6 := Xor(R8, f_i);
+
+		R8 := R7;
+		R7 := R6;
+        end for;
+
+        return BinToHex(R8 cat R7);
+end function;
