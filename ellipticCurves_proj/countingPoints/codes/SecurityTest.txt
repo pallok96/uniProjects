@@ -1,0 +1,133 @@
+MAX_MULTIPLE := 1000;
+
+/*
+INPUT:
+> p = prime;
+> q = power of p;
+> A,B = values in GF(q);
+> E = elliptic curve over GF(q) defined by y^2 = x^3 + A*x + B.
+OUTPUT:
+> It returns FALSE if the curve E is not secure and returns TRUE if the curve may be secure.
+*/
+function SecurityTest(p,q,A,B,E)
+	
+	"---------------------------------------";
+	"Testing the curve:";
+	E;
+	
+	
+	// We compute the cardinality of E by the native MAGMA command to be fast,
+	// but you can use any algorithm, including the Schoof one.
+	card := #E;
+	//card := Schoof(p,q,A,B);
+	"The curve has cardinality =", card;
+	
+	
+	"";
+	
+	
+	// Now we check whether or not #E is 'small' multiple of a 'big' prime (#E = a*l),
+	// by removing small prime factors while their product is <= MAX_MULTIPLE,
+	// and checking whether what remains is prime or not.
+	a := 1;
+	l := card;
+	fact := [];
+	i := 2;
+	while i le MAX_MULTIPLE do
+		if IsDivisibleBy(l,i) then
+			temp := a * i;
+			if temp gt MAX_MULTIPLE then break; end if;
+			Append(~fact,i);
+			a := temp;
+			l := l div i;
+		else
+			i := i + 1;
+		end if;
+	end while;
+	if l ne 1 then Append(~fact,l); end if;
+	
+	if IsPrime(l) then
+		"The cardinality of the curve is a 'small' multiple of a 'big' prime.";
+		"In particular it is #E=", a, "*", l;
+		"and the explicit factorization is", fact;
+	else
+		"The cardinality of the curve does not have any 'big' prime factor.";
+		"The (partial) factorization is", fact;
+		return false;
+	end if;
+	
+	
+	"";
+	
+	
+	if card eq q then
+		"The curve is anomalous.";
+		return false;
+	else
+		"The curve is not anomalous.";
+	end if;
+
+	if (card mod p) eq 1 then
+		"The curve is supersingular.";
+		return false;
+	else
+		"The curve is not supersingular.";
+	end if;
+	
+	
+	"";
+	
+	
+	// We check whether or not the embedding degree is in [1..100].
+	temp_q := 1;
+	for i := 1 to 100 do
+		temp_q := (temp_q * q) mod l;
+		if temp_q eq 1 then
+			"The embedding degree of the curve is", i;
+			return false;
+		end if;
+	end for;
+	"The embedding degree of the curve is > 100.";
+	
+	
+	// Now we compute exactly the embedding degree.
+	Zl := IntegerRing(l);
+	k := l-1;
+	cond := true;
+	while cond do
+		cond := false;
+		F := Factorization(k);
+		for i := 1 to #F do
+			p := F[i][1];
+			if (Zl!q)^(k div p) eq Zl!1 then
+				cond := true;
+				k := k div p;
+				break i;
+			end if;
+		end for;
+	end while;
+	
+	"More specifically, the embedding degree of the curve is", k, ".";
+	
+	
+	"";
+	
+	return true;
+	
+end function;
+
+
+
+
+
+
+
+//-----------EXAMPLE-------------
+
+p := NextPrime(Random(10^20,10^21));
+b := 1;
+q := p^b;
+A := Random(GF(q));
+B := Random(GF(q));
+E := EllipticCurve([A,B]);
+SecurityTest(p,q,A,B,E);

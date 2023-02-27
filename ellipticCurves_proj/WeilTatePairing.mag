@@ -1,0 +1,166 @@
+//*************************************//
+//                                     //
+//   PLEASE SET HERE YOUR PARAMETERS   //
+//   AND DO NOT MODIFY ANYTHING ELSE   //
+//   BELOW THE NEXT NOTIFICATION BOX   //
+//                                     //
+//*************************************//
+
+q := 23;
+A := -1;
+B := 0;
+
+//*************************************//
+//                                     //
+//   BEYOND THIS BOX THE ACTUAL CODE   //
+//   IS FOUND. PLEASE DO NOT EDIT IT   //
+//   EXCEPT WHEREAS OTHERWISE STATED   //
+//   IN ORDER TO MAKE IT RIGHTLY RUN   //
+//                                     //
+//*************************************//
+
+
+
+
+// HERE I DEFINE OUR FINITE FIELD AND OUR ELLIPTIC CURVE
+Fq := GF(q);
+E := EllipticCurve([Fq! A, Fq! B]);
+
+
+
+
+P := E! [2, 11, 1];
+// P := Random(E); // <-------------------------------------- // HERE YOU CAN UNCOMMENT THESE STATEMENTS (AND COMMENT THE PREVIOUS ONE)
+// while (P eq E! [0, 1, 0]) do                               // SO THAT YOU CAN RANDOMLY PICK THE POINT P ON WHICH A WEIL PAIRING WILL
+//     P := Random(E);                                        // BE PERFORMED. THE MOMENTARY P FITS WELL WITH THE AS WELL MOMENTARY PA-
+// end while;                                                 // RAMETERS q, A, B BECAUSE THEY FOLLOW THE EXAMPLE FOUND IN THE LECTURES
+
+
+
+
+// HERE I FIND THE ORDER r OF THE POINT P IN E. HENCE P BELONGS TO THE r-TORSION SUBGROUP OF E
+r := Order(P);
+
+
+
+
+// NOW I WANT TO FIND THE SMALLEST INTEGER k SO THAT THE r-TORSION SUBGROUP IS COMPLETELY INCLUDED IN THE ELLIPTIC CURVE DEFINED ON A FINITE EXTENSION Fq^k OF THE STARTING FIELD Fq
+k := Modorder(q, r);
+
+
+
+
+// HERE THE APPROPRIATE EXTENSION IS DEFINED, USING THE RIGHT k COMPUTED IN THE PREVIOUS LINES
+Fqk<i> := ext<Fq | Polynomial([1, 0, 1])>;
+// f := PrimitivePolynomial(Fq, k); // <-------------------------------------- // HERE YOU CAN UNCOMMENT THESE STATEMENTS (AND COMMENT THE PREVIOUS ONE)
+// Fqk<i> := ext<Fq | f>;                                                      // SO THAT YOU CAN BUILD THE EXTENSION FIELD QUOTIENTING WITH A PRIMITIVE
+                                                                               // POLYNOMIAL SO THAT ITS ROOT i IS THEN A GENERATING ELEMENT OF Fqk*. IN
+                                                                               // GENERAL IT CAN BE A USEFUL PRACTICE, HOWEVER MY CHOICE HERE IS x^2 + 1
+                                                                               // NAMELY Polynomial([1, 0, 1]) BECAUSE I CHASE THE EXAMPLE SEEN IN CLASS
+
+
+
+
+// I REDRAW OUR ELLIPTIC CURVE ON THE JUST DETERMINED EXTENSION AND DEFINE THE RING OF THE RATIONAL FUNCTIONS IN 2 VARIABLES WITH COEFFICIENTS IN Fq^k MODULO THE RELATION y^2 = x^3 + A*x + B
+E := BaseChange(E, Fqk);
+R<x,y> := FunctionField(E);
+
+
+
+
+// NOW IS TIME TO SEARCH FOR ANOTHER POINT Q IN THE (THIS TIME ENTIRE) r-TORSION SUBGROUP TO BE PAIRED WITH P; REMEMBER TO CAST THIS LATTER IN THE "NEW" ELLIPTIC CURVE
+P := E! P;
+Q := E! [21, 12*i, 1];
+// Q := Random(E); // <-------------------------------------- // HERE YOU CAN UNCOMMENT THESE STATEMENTS (AND COMMENT THE PREVIOUS ONE)
+// spanP := [m*P : m in [1 .. r - 1]];                        // SO THAT YOU CAN RANDOMLY PICK THE POINT Q WHICH WILL BE PAIRED WITH P.
+// while ((Order(Q) ne r) or (Q in spanP)) do                 // CLEARLY THE LOOP IS DUE TO THE FACT THAT WE WANT AN r-TORSION POINT TO
+//     Q := Random(E);                                        // SUCCESSFULLY PERFORM THE WEIL PAIRING. ONCE AGAIN, THE MOMENTARY POINT
+// end while;                                                 // HAS BEEN CHOSEN TO FOLLOW THE EXERCISE PRESENTED IN THE VIDEO-LECTURES
+                                                              
+
+
+
+// THIS ROUTINE IS PROPAEDEUTIC TO THE NEXT ONE
+// BASICALLY I WANT THIS PROCEDURE TO OUTPUT A RATIONAL FUNCTION HAVING A SPECIFIC DIVISOR; THE THEORY BEHIND IT INVOLVES THE ARGUMENT ABOUT THE P-Q CROSSING LINE AND THE VERTICAL ONE
+function Line(P, Q)
+	if (Q[1] eq P[1]) then
+		if ((Q[2] eq P[2]) and (Q[2] ne 0)) then
+			slope := (3*P[1]^2 + A)/(2*P[2]);
+		else
+			l := x - P[1];
+			return l;
+		end if;
+	else
+		slope := (Q[2] - P[2])/(Q[1] - P[1]);
+	end if;
+	l := (y - P[2] - slope*(x - P[1]))/(x + P[1] + Q[1] - slope^2);
+	return l;
+end function;
+
+
+
+
+// THIS ROUTINE COMPUTES THE RATIONAL FUNCTION HAVING r(P)-r(O) AS DIVISOR BY MEANS OF THE DOUBLE AND ADD ALGORITHM
+function MillerFunction(r, P)
+	T := P;
+	f_rP := 1;
+	binr := Intseq(r, 2);
+	for j := #binr - 1 to 1 by (-1) do
+		l_TT := Line(T, T);
+		f_rP := f_rP^2*l_TT;
+		T := 2*T;
+		if binr[j] eq 1 then
+			l_TP := Line(T, P);
+			f_rP := f_rP*l_TP;
+			T := T + P;
+		end if;
+	end for;
+	return f_rP;
+end function;
+
+
+
+
+// HERE WE GO! THIS IS THE ACTUAL WEIL PAIRING ALGORITHM, WHICH LITERALLY FOLLOWS ITS DEFINITION
+// A REMARK ON THE CHOICE OF R AND S = -R IS YET NEEDED: ACTUALLY THEY ARE THE SMARTEST AND MOST CONVENIENT VALUES OF THESE POINT FOR WHICH w IS WELL DEFINED; FOR FURTHER DETAILS, SEE reference.pdf
+function WeilPairing(P, Q)
+	f_rP := MillerFunction(r, P);
+	f_rQ := MillerFunction(r, Q);
+	R := Random(E);
+	while (R in [E! [0, 1, 0], P, Q, -P, -Q]) do
+		R := Random(E);
+	end while;
+	S := -R;
+	l_PR := Line(P, R);
+	l_QS := Line(Q, S);
+	f := f_rP/(l_PR^r);
+	g := f_rQ/(l_QS^r);
+	w := (f(Q + S)*g(R))/(f(S)*g(P + R));
+	return w;
+end function;
+
+
+
+
+// A VERY SIMILAR ALBEIT SIMPLER (BUT WITH A DIFFERENT SETUP) PAIRING FUNCTION IS THE TATE ONE, WHICH EXPLOITS A SINGLE MILLER FUNCTION
+function TatePairing(P, Q)
+	f_rP := MillerFunction(r, P);
+	R := Random(E);
+	while R in [E! [0, 1, 0], P, Q, -P, -Q] do
+		R := Random(E);
+	end while;
+	t := f_rP(Q + R)/f_rP(R);
+	return t;
+end function;
+
+
+
+
+// FINALLY CALL THE PAIRING FUNCTION IN ORDER TO DISPLAY THE RESULT
+// IN ORDER TO OBTAIN A MEANINGFUL VALUE FROM A TATE PAIRING CALL, ONE SHOULD BUILD A DIFFERENT SETUP (I SUGGEST THE ONE SEEN IN CLASS WITH q=5, A=0, B=-3, P=(4,2), Q=(i+1,4i+2), f=Polynomial([2,0,1]))
+WeilPairing(P, Q);
+// TatePairing(P, Q); 
+
+
+
+

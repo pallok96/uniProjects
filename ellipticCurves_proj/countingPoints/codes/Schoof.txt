@@ -1,0 +1,296 @@
+/*
+INPUT:
+> p = prime;
+> q = power of p.
+OUTPUT:
+> A sequence of primes starting from 2, not containing p, such that their product >= 4*Sqrt(q);
+> The product of those primes.
+*/
+function GeneratePrimeList(p,q)
+
+	bound := 4*Sqrt(q);
+	prime_list := [2];
+	product := 2;
+	last_prime := 2;
+	
+	while product le bound do
+		last_prime := NextPrime(last_prime);
+		if last_prime ne p then
+			Append(~prime_list,last_prime);
+			product *:= last_prime;
+		end if;
+	end while;
+	
+	return prime_list, product;
+
+end function;
+
+
+
+
+/*
+INPUT:
+> R = polynomial ring with two variables over some finite field GF(q);
+> A,B = values in GF(q);
+> ~div_pol = reference to a sequence of division polynomials in R associated to the elliptic curve defined by [A,B];
+> t = positive integer.
+Computes the division polynomials in the polynomial ring R till the t-th one.
+*/
+procedure DivPol(R,A,B,~div_pol,t)
+	
+	x := R.1;
+	y := R.2;
+	
+	if #div_pol eq 0 then
+		div_pol := [
+			1,
+			2*y,
+			3*(x^4) + 6*A*(x^2) + 12*B*x - A^2,
+			4*y*( x^6 + 5*A*(x^4) + 20*B*(x^3) - 5*A^2*(x^2) - 4*A*B*x - 8*B^2 - A^3 )];
+	end if;
+	
+	Z := Integers();
+	card := #div_pol;
+	
+	while card lt t do
+		if IsEven(card) then
+			m := Z!(card/2);
+			Append(~div_pol,div_pol[m+2]*div_pol[m]^3 - div_pol[m-1]*div_pol[m+1]^3);
+		else
+			m := Z!((card+1)/2);
+			Append(~div_pol,div_pol[m]*(div_pol[m+2]*div_pol[m-1]^2 - div_pol[m-2]*div_pol[m+1]^2)/(2*y));
+		end if;
+		card +:= 1;
+	end while;
+	
+end procedure;
+
+
+
+
+/*
+INPUT:
+> R = polynomial ring with two variables over some finite field GF(q);
+> div_pol = a list of division polynomials (coercible into R) such that #div_pol >= 2*k;
+> k = an integer value != 0.
+OUTPUT:
+> A pair of polynomials in R corresponding to k*(x,y) in the elliptic curve associated to the div_pol list.
+*/
+function ScalarPol(R,div_pol,k)
+	
+	x := R.1;
+	y := R.2;
+	
+	i := Abs(k);
+	
+	if i eq 0 then
+		result := "infty";
+	elif i eq 1 then
+		result := <x,y>;
+	else
+		/*result := <
+			x - ((R!div_pol[i-1])*(R!div_pol[i+1]))/((R!div_pol[i])^2),
+			(R!div_pol[2*i])/(2*(R!div_pol[i])^4)>;*/
+		bool, inv := IsInvertible(R!div_pol[i]);
+		invpow2 := inv^2;
+		invpow4 := invpow2^2;
+		bool, inv2 := IsInvertible(R!2);
+		result := <
+			x - R!(div_pol[i-1]*div_pol[i+1])*invpow2,
+			R!div_pol[2*i]*inv2*invpow4>;
+	end if;
+	
+	if k lt 0 then
+		result[2] := -result[2];
+	end if;
+	
+	return result;
+	
+end function;
+
+
+
+
+
+/*
+INPUT:
+> p = prime;
+> q = power of p;
+> A,B = values in GF(q).
+OUTPUT:
+> The cardinality of E(GF(q)) where E is the elliptic curve associated to [A,B].
+*/
+function Schoof(p,q,A,B)
+	
+	prime_list, product := GeneratePrimeList(p,q);
+	
+	//Handling the special case l = 2.
+	R<z> := PolynomialRing(GF(q));
+	if Gcd(z^q-z,z^3+A*z+B) eq 1 then
+		t2 := 1;
+	else
+		t2 := 0;
+	end if;
+	t_list := [t2];
+
+	S<x,y> := PolynomialRing(GF(q),2);
+	
+	div_pol := [];
+	DivPol(S,A,B,~div_pol,prime_list[#prime_list]);
+
+	for l in Exclude(prime_list,2) do
+		
+		Q<x1,y1> := quo<S | y^2 - x^3 - A*x - B, div_pol[l]>;
+		
+		qb := q mod l;
+		if qb ge l/2 then qb -:= l; end if;
+		
+		//Compute P1 = phi_q^2(x,y)
+		P1 := <x1^(q^2), y1^(q^2)>;
+		
+		//Compute P2 = qb*(x,y)
+		DivPol(S,A,B,~div_pol,2*Abs(qb));
+		P2 := ScalarPol(Q,div_pol,qb);
+
+
+		if P1[1] ne P2[1] then
+			
+			//Compute (X,Y) = P1 + P2, but extract the common denominators.
+			X := (P1[2]-P2[2])^2 - (P1[1] + P2[1])*(P1[1]-P2[1])^2;			// den = (P1[1]-P2[1])^2.
+			Y := (P1[2]-P2[2])*(P1[1]*(P1[1]-P2[1])^2 - X) - P1[2]*(P1[1]-P2[1])^3;	// den = (P1[1]-P2[1])^3.
+			
+			for tb := 1 to Integers()!((l-1)/2) do
+
+				//Compute P3 = phi_q(tb*(x,y)).
+				DivPol(S,A,B,~div_pol,2*Abs(tb));
+				P3 := ScalarPol(Q,div_pol,tb);
+				P3 := <P3[1]^q,P3[2]^q>;
+				
+				//While checking equality, we have to consider back the extracted denominators.
+				if X eq P3[1]*(P1[1]-P2[1])^2 then
+					if Y eq P3[2]*(P1[1]-P2[1])^3 then
+						tl := tb;
+					else
+						tl := -tb;
+					end if;
+				end if;
+				
+			end for;
+			
+		elif LegendreSymbol(q,l) eq 1 then
+			
+			//Compute w such that w^2 = q (mod l).
+			w := Integers()!Sqrt(IntegerRing(l)!q);
+			
+			//Compute P4 = phi_q(w*(x,y)).
+			DivPol(S,A,B,~div_pol,2*Abs(w));
+			P4 := ScalarPol(Q,div_pol,w);
+			P4 := <P4[1]^q,P4[2]^q>;
+
+			if P4[1] eq P1[1] then
+				if P4[2] eq P1[2] then
+					tl := 2*w;
+				else
+					tl := -2*w;
+				end if;
+			else
+				tl := 0;
+			end if;
+
+		else
+
+			tl := 0;
+
+		end if;
+		
+		Append(~t_list,tl);
+
+	end for;
+
+	t := ChineseRemainderTheorem(t_list, prime_list);
+	if t gt 2*Sqrt(q) then
+		t := t - product;
+	end if;
+	return q + 1 - t;
+
+end function;
+
+
+
+
+
+
+
+//-----------EXAMPLE-------------
+/*
+p := 503;
+b := 1;
+q := p^b;
+A := GF(q)!2;
+B := GF(q)!1;
+E := EllipticCurve([A,B]);
+Schoof(p,q,A,B);
+*/
+
+
+
+
+//-----------TEST-------------
+
+/*
+INPUT:
+> K = positive integer;
+> p1,p2 = positive integers such that p1 <= p2;
+> b = positive integer.
+OUTPUT:
+> The time to execute the algorithm on K random curves defined over GF(q) with q=p^b, where p1 <= p <= p2;
+> The average time for a single curve test.
+*/
+function TimeTest(K,p1,p2,b)
+	t := Cputime();
+	for k := 1 to K do
+		repeat p := NextPrime(Random(p1-1,p2)); until p le p2;
+		q := p^b;
+		repeat
+			A := Random(GF(q));
+			B := Random(GF(q));
+		until 4*A^3+27*B^2 ne 0;
+		res := Schoof(p,q,A,B);
+	end for;
+	t1 := Cputime(t);
+	return t1, (t1/K);
+end function;
+
+
+
+
+/*
+INPUT:
+> K = positive integer;
+> p1,p2 = positive integers such that p1 <= p2;
+> b = positive integer.
+OUTPUT:
+> A boolean that says whether or not the execution of the algorithm is correct,
+  testing at most K curves defined over GF(q) with q=p^b, where p1 <= p <= p2.
+*/
+function CorrectnessTest(K,p1,p2,b)
+	p := NextPrime(p1-1);
+	cond := true;
+	while cond do
+		q := p^b;
+		k := 0;
+		for A in GF(q) do
+		for B in GF(q) do
+			if 4*A^3+27*B^2 ne 0 then
+				k +:= 1;
+				E := EllipticCurve([A,B]);
+				if Schoof(p,q,A,B) ne #E then return false; end if;
+				if k eq K then cond := false; break A; end if;
+			end if;
+		end for;
+		end for;
+		p := NextPrime(p);
+		if p gt p2 then cond := false; end if;
+	end while;
+	return true;
+end function;

@@ -1,0 +1,100 @@
+/*
+INPUT:
+> q = prime power;
+> A,B = values in GF(q).
+OUTPUT:
+> The number of points of E(GF(q)), where E is the elliptic curve associated to [A,B].
+*/
+function Naive(q,A,B)
+	
+	res := 1;
+	
+	for x in GF(q) do
+		temp := x^3+A*x+B;
+		if temp eq 0 then
+			res +:= 1;
+		elif IsSquare(temp) then
+			res +:= 2;
+		end if;
+	end for;
+	
+	return res;
+	
+end function;
+
+
+
+
+//-----------EXAMPLE-------------
+/*
+p := 503;
+b := 1;
+q := p^b;
+A := GF(q)!2;
+B := GF(q)!1;
+E := EllipticCurve([A,B]);
+Naive(q,A,B);
+*/
+
+
+
+
+//-----------TEST-------------
+
+/*
+INPUT:
+> K = positive integer;
+> p1,p2 = positive integers such that p1 <= p2;
+> b = positive integer.
+OUTPUT:
+> The time to execute the algorithm on K random curves defined over GF(q) with q=p^b, where p1 <= p <= p2;
+> The average time for a single curve test.
+*/
+function TimeTest(K,p1,p2,b)
+	t := Cputime();
+	for k := 1 to K do
+		repeat p := NextPrime(Random(p1-1,p2)); until p le p2;
+		q := p^b;
+		repeat
+			A := Random(GF(q));
+			B := Random(GF(q));
+		until 4*A^3+27*B^2 ne 0;
+		res := Naive(q,A,B);
+	end for;
+	t1 := Cputime(t);
+	return t1, (t1/K);
+end function;
+
+
+
+
+/*
+INPUT:
+> K = positive integer;
+> p1,p2 = positive integers such that p1 <= p2;
+> b = positive integer.
+OUTPUT:
+> A boolean that says whether or not the execution of the algorithm is correct,
+  testing at most K curves defined over GF(q) with q=p^b, where p1 <= p <= p2.
+*/
+function CorrectnessTest(K,p1,p2,b)
+	p := NextPrime(p1-1);
+	cond := true;
+	while cond do
+		q := p^b;
+		k := 0;
+		for A in GF(q) do
+		for B in GF(q) do
+			if 4*A^3+27*B^2 ne 0 then
+				k +:= 1;
+				E := EllipticCurve([A,B]);
+				if Naive(q,A,B) ne #E then return false; end if;
+				if k eq K then cond := false; break A; end if;
+			end if;
+		end for;
+		end for;
+		p := NextPrime(p);
+		if p gt p2 then cond := false; end if;
+	end while;
+	return true;
+end function;

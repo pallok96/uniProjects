@@ -1,0 +1,119 @@
+/*
+INPUT:
+> q = prime power;
+> t = q+1-#E for some elliptic curve E over GF(q);
+> n = positive integer.
+OUTPUT:
+> Number of points of E(GF(q^n)).
+*/
+function Extender(q,t,n)
+	
+	s := [2,t];
+	for i := 2 to n do
+		s[i+1] := t*s[i] - q*s[i-1];
+	end for;
+	return q^n + 1 - s[n+1];
+	
+end function;
+
+
+
+
+//-----------EXAMPLE-------------
+/*
+p := 5;
+b := 1;
+q := p^b;
+A := GF(q)!1;
+B := GF(q)!1;
+E := EllipticCurve([A,B]);
+t := q + 1 - #E;
+n := 3;
+Extender(q,t,n);
+#Points(E,GF(q^n));
+*/
+
+
+
+
+
+
+//-----------TEST-------------
+
+function Naive(q,A,B)
+	res := 1;
+	for x in GF(q) do
+		temp := x^3+A*x+B;
+		if temp eq 0 then
+			res +:= 1;
+		elif IsSquare(temp) then
+			res +:= 2;
+		end if;
+	end for;
+	return res;
+end function;
+
+/*
+INPUT:
+> p1,p2 = positive integers such that p1 <= p2;
+> b = positive integer;
+> n = positive integer.
+Picks a random elliptic curve defined over GF(q) with q=p^b, where p1 <= p <= p2,
+generates the curve on the n-th extension of the base field and executes:
+- Extender algorithm with Naive method on the "base curve";
+- Naive method on the "extended curve";
+and prints their execution times.
+*/
+procedure TimeTest(p1,p2,b,n)
+	repeat p := NextPrime(Random(p1-1,p2)); until p le p2;
+	q := p^b;
+	repeat
+		A := Random(GF(q));
+		B := Random(GF(q));
+	until 4*A^3+27*B^2 ne 0;
+	A1 := GF(q^n)!A;
+	B1 := GF(q^n)!B;
+	
+	time res := Extender(q,q+1-Naive(q,A,B),n);
+	time res1 := Naive(q^n,A1,B1);
+end procedure;
+
+
+
+
+/*
+INPUT:
+> K = positive integer;
+> p1,p2 = positive integers such that p1 <= p2;
+> b = positive integer;
+> n = positive integer.
+OUTPUT:
+> A boolean that says whether or not the execution of the algorithm is correct,
+  testing at most K curves defined over GF(q) with q=p^b, where p1 <= p <= p2,
+  testing the extension of degree n.
+*/
+function CorrectnessTest(K,p1,p2,b,n)
+	p := NextPrime(p1-1);
+	cond := true;
+	while cond do
+		q := p^b;
+		k := 0;
+		for A in GF(q) do
+		for B in GF(q) do
+			if 4*A^3+27*B^2 ne 0 then
+				k +:= 1;
+				E := EllipticCurve([A,B]);
+				t := q + 1 - #E;
+				A1 := GF(q^n)!A;
+				B1 := GF(q^n)!B;
+				E1 := EllipticCurve([A1,B1]);
+				if Extender(q,t,n) ne #E1 then return false; end if;
+				if k eq K then cond := false; break A; end if;
+			end if;
+		end for;
+		end for;
+		p := NextPrime(p);
+		if p gt p2 then cond := false; end if;
+	end while;
+	return true;
+end function;

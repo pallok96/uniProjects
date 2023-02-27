@@ -1,0 +1,179 @@
+/*
+INPUT:
+> q = prime power;
+> A,B = values in GF(q);
+> E = elliptic curve over GF(q), defined by y^2 = x^3+Ax+B.
+OUTPUT:
+> A random point of E.
+*/
+function ChooseRandomPoint(E,A,B,q)
+	repeat
+		x := Random(GF(q));
+	until IsSquare(x^3+A*x+B);
+	y := Sqrt(x^3+A*x+B);
+	z := GF(q)!1;
+	return E![x,y,z];
+end function;
+
+
+
+/*
+INPUT:
+> q = prime power;
+> L = positive integer.
+OUTPUT:
+> Return the biggest multiple of L that lies in [1+q-2*Sqrt(q)..1+q+2*Sqrt(q)].
+*/
+function MultipleOfLInInterval(L,q)
+	quot := Floor(q + 1 + 2*Sqrt(q)) div L;
+	return L*quot;
+end function;
+
+
+
+/*
+INPUT:
+> p = prime;
+> q = power of p;
+> A,B = values in GF(q);
+> E = elliptic curve over GF(q), defined by y^2 = x^3+Ax+B.
+OUTPUT:
+> The number of point of E(GF(q)).
+*/
+function BGStep(E,A,B,p,q)
+	L := 1;
+	repeat
+		repeat
+		
+		//Pick random point P on the curve E.
+		P := ChooseRandomPoint(E,A,B,q);
+		
+		
+		//Look for integer M such that MP = O.
+		m := Floor(q^(1/4))+1;
+		P_arr := [];
+		for j in [0..m] do
+			P_arr[j+1] := j*P;
+		end for;
+		Q1 := (q+1)*P;
+		Q2 := (2*m)*P;
+		for k := -m to m do
+			temp := Q1 + k*Q2;
+			for j in [0..m] do
+				if temp eq P_arr[j+1] then
+					M := q+1+2*m*k-j;
+					break k;
+				elif temp eq -P_arr[j+1] then
+					M := q+1+2*m*k+j;
+					break k;
+				end if;
+			end for;
+		end for;
+		
+		until M ne 0;
+
+		//Compute the order of P.
+		cond := true;
+		while cond do
+			cond := false;
+			F := Factorization(M);
+			for i := 1 to #F do
+				p := F[i][1];
+				if (Integers()!(M/p)*P)[3] eq 0 then
+					cond := true;
+					M := Integers()!(M/p);
+					break i;
+				end if;
+			end for;
+		end while;
+		//Now M is the order of P.
+		
+		//Add new order information.
+		L := Lcm(L,M);
+		N := MultipleOfLInInterval(L,q);
+
+	until N-L lt q+1-2*Sqrt(q);
+
+	return N;
+
+end function;
+
+
+
+
+
+
+//-----------EXAMPLE-------------
+/*
+p := 503;
+b := 1;
+q := p^b;
+A := GF(q)!2;
+B := GF(q)!1;
+E := EllipticCurve([A,B]);
+BGStep(E,A,B,p,q);
+*/
+
+
+
+
+//-----------TEST-------------
+
+/*
+INPUT:
+> K = positive integer;
+> p1,p2 = positive integers such that p1 <= p2;
+> b = positive integer.
+OUTPUT:
+> The time to execute the algorithm on K random curves defined over GF(q) with q=p^b, where p1 <= p <= p2;
+> The average time for a single curve test.
+*/
+function TimeTest(K,p1,p2,b)
+	t := Cputime();
+	for k := 1 to K do
+		repeat p := NextPrime(Random(p1-1,p2)); until p le p2;
+		q := p^b;
+		repeat
+			A := Random(GF(q));
+			B := Random(GF(q));
+		until 4*A^3+27*B^2 ne 0;
+		E := EllipticCurve([A,B]);
+		res := BGStep(E,A,B,p,q);
+	end for;
+	t1 := Cputime(t);
+	return t1, (t1/K);
+end function;
+
+
+
+
+/*
+INPUT:
+> K = positive integer;
+> p1,p2 = positive integers such that p1 <= p2;
+> b = positive integer.
+OUTPUT:
+> A boolean that says whether or not the execution of the algorithm is correct,
+  testing at most K curves defined over GF(q) with q=p^b, where p1 <= p <= p2.
+*/
+function CorrectnessTest(K,p1,p2,b)
+	p := NextPrime(p1-1);
+	cond := true;
+	while cond do
+		q := p^b;
+		k := 0;
+		for A in GF(q) do
+		for B in GF(q) do
+			if 4*A^3+27*B^2 ne 0 then
+				k +:= 1;
+				E := EllipticCurve([A,B]);
+				if BGStep(E,A,B,p,q) ne #E then return false; end if;
+				if k eq K then cond := false; break A; end if;
+			end if;
+		end for;
+		end for;
+		p := NextPrime(p);
+		if p gt p2 then cond := false; end if;
+	end while;
+	return true;
+end function;
