@@ -1,9 +1,0 @@
-#!/bin/bash
-javac -cp '.:common-lang3.jar' DataBase.java
-javac -cp '.:common-lang3.jar' ImageViewer.java
-javac -cp '.:common-lang3.jar' SearchBtn.java
-javac Attention.java
-javac ClearBtn.java
-javac MyNode.java
-javac MyTree.java
-
