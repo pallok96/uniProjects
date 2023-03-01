@@ -1,0 +1,15 @@
+#!/bin/bash
+javac -cp /home/piasa96/Scrivania/JAVAFX/javafx-sdk-19.0.2.1/lib --add-modules javafx.controls, javafx.fxml Client.java
+javac SubmitBtn.java
+javac LoadBtn.java
+javac Sender.java
+javac MyTextField.java
+
+javac jniAES.java
+javac jniRSA.java
+
+gcc -c -fPIC AESLib.c
+gcc -c -fPIC RSALib.c -lgmp
+
+gcc -I/usr/lib/jvm/java-8-oracle/include -I/usr/lib/jvm/java-8-oracle/include/linux -fPIC -shared -z noexecstack jniAES.c AESLib.o -o libAESLib.so
+gcc -I/usr/lib/jvm/java-8-oracle/include -I/usr/lib/jvm/java-8-oracle/include/linux -fPIC -shared -z noexecstack jniRSA.c RSALib.o -o libRSALib.so -lgmp
